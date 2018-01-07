@@ -25,15 +25,15 @@
 
 package com.loomcom.symon;
 
-import com.loomcom.symon.machines.CNP1Machine;
-import com.loomcom.symon.machines.Machine;
-import com.loomcom.symon.machines.MulticompMachine;
-import com.loomcom.symon.machines.SimpleMachine;
-import com.loomcom.symon.machines.SymonMachine;
 import java.util.Locale;
+
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+
+import com.loomcom.symon.machines.Machine;
+import com.loomcom.symon.machines.MachineFactory;
+import com.loomcom.symon.machines.MachineFactory.MachineEnum;
 
 public class Main {
     
@@ -44,33 +44,18 @@ public class Main {
      * @param args Program arguments
      */
     public static void main(String args[]) throws Exception {
-        
-        Class<? extends Machine> machineClass = SymonMachine.class;
+        Machine machineInstance = MachineFactory.createMachine(MachineEnum.SYMON);
         for(int i = 0; i < args.length; ++i) {
             String arg = args[i].toLowerCase(Locale.ENGLISH);
             if(arg.equals("-machine") && (i+1) < args.length) {
                 String machine = args[i+1].trim().toLowerCase(Locale.ENGLISH);
-                switch (machine) {
-                    case "symon":
-                        machineClass = SymonMachine.class;
-                        break;
-                    case "multicomp":
-                        machineClass = MulticompMachine.class;
-                        break;
-                    case "cnp1":
-                    	machineClass = CNP1Machine.class;
-                    	break;
-                    case "simple":
-                        machineClass = SimpleMachine.class;
-                        break;
-                }
+                machineInstance = MachineFactory.createMachine(machine);
             }
         }
         
         while (true) {
-            if (machineClass == null) {
-            	final String CNP1 = "CNP-1";
-                Object[] possibilities = {"Symon", "Multicomp", "Simple", CNP1};
+            if (machineInstance == null) {
+                Object[] possibilities = MachineFactory.getFriendlyNames();
                 String s = (String)JOptionPane.showInputDialog(
                                 null,
                                 "Please choose the machine type to be emulated:",
@@ -80,19 +65,10 @@ public class Main {
                                 possibilities,
                                 "Symon");
                 
-
-                if (s != null && s.equals("Multicomp")) {
-                    machineClass = MulticompMachine.class;
-                } else if (s != null && s.equals("Simple")) {
-                    machineClass = SimpleMachine.class;
-                } else if (CNP1.equals(s)) {
-                	machineClass = CNP1Machine.class;
-                } else {
-                    machineClass = SymonMachine.class;
-                }
+                machineInstance = MachineFactory.createMachine(s);
             }
         
-            final Simulator simulator = new Simulator(machineClass);
+            final Simulator simulator = new Simulator(machineInstance);
         
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
@@ -110,7 +86,7 @@ public class Main {
         
             Simulator.MainCommand cmd = simulator.waitForCommand();
             if (cmd.equals(Simulator.MainCommand.SELECTMACHINE)) {
-                machineClass = null;
+                machineInstance = null;
             } else {
                 break;
             }

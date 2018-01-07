@@ -167,10 +167,10 @@ public class Simulator {
      */
     private static final String[] STEPS = {"1", "5", "10", "20", "50", "100"};
 
-    public Simulator(Class<? extends Machine> machineClass) throws Exception {
+    public Simulator(Machine machineInstance) throws Exception {
         this.breakpoints = new Breakpoints(this);
 
-        this.machine = (Machine) machineClass.getConstructors()[0].newInstance();
+        this.machine = machineInstance;
 
         // Initialize final fields in the constructor.
         this.traceLog = new TraceLog();
