@@ -25,6 +25,7 @@
 
 package com.loomcom.symon;
 
+import com.loomcom.symon.machines.CNP1Machine;
 import com.loomcom.symon.machines.MulticompMachine;
 import com.loomcom.symon.machines.SimpleMachine;
 import com.loomcom.symon.machines.SymonMachine;
@@ -55,6 +56,9 @@ public class Main {
                     case "multicomp":
                         machineClass = MulticompMachine.class;
                         break;
+                    case "cnp1":
+                    	machineClass = CNP1Machine.class;
+                    	break;
                     case "simple":
                         machineClass = SimpleMachine.class;
                         break;
@@ -64,7 +68,8 @@ public class Main {
         
         while (true) {
             if (machineClass == null) {
-                Object[] possibilities = {"Symon", "Multicomp", "Simple"};
+            	final String CNP1 = "CNP-1";
+                Object[] possibilities = {"Symon", "Multicomp", "Simple", CNP1};
                 String s = (String)JOptionPane.showInputDialog(
                                 null,
                                 "Please choose the machine type to be emulated:",
@@ -79,6 +84,8 @@ public class Main {
                     machineClass = MulticompMachine.class;
                 } else if (s != null && s.equals("Simple")) {
                     machineClass = SimpleMachine.class;
+                } else if (CNP1.equals(s)) {
+                	machineClass = CNP1Machine.class;
                 } else {
                     machineClass = SymonMachine.class;
                 }
