@@ -23,21 +23,53 @@
 
 package com.loomcom.symon;
 
-import com.loomcom.symon.devices.Memory;
-import com.loomcom.symon.exceptions.*;
-import com.loomcom.symon.machines.Machine;
-import com.loomcom.symon.ui.*;
-import com.loomcom.symon.ui.Console;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
+import javax.swing.border.EmptyBorder;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import com.loomcom.symon.devices.Memory;
+import com.loomcom.symon.exceptions.FifoUnderrunException;
+import com.loomcom.symon.exceptions.MemoryAccessException;
+import com.loomcom.symon.exceptions.MemoryRangeException;
+import com.loomcom.symon.exceptions.SymonException;
+import com.loomcom.symon.machines.Machine;
+import com.loomcom.symon.ui.BreakpointsWindow;
+import com.loomcom.symon.ui.Console;
+import com.loomcom.symon.ui.MemoryWindow;
+import com.loomcom.symon.ui.PreferencesDialog;
+import com.loomcom.symon.ui.StatusPanel;
+import com.loomcom.symon.ui.TraceLog;
+import com.loomcom.symon.ui.VideoWindow;
 
 /**
  * Symon Simulator Interface and Control.
@@ -135,7 +167,7 @@ public class Simulator {
      */
     private static final String[] STEPS = {"1", "5", "10", "20", "50", "100"};
 
-    public Simulator(Class machineClass) throws Exception {
+    public Simulator(Class<? extends Machine> machineClass) throws Exception {
         this.breakpoints = new Breakpoints(this);
 
         this.machine = (Machine) machineClass.getConstructors()[0].newInstance();
@@ -471,7 +503,9 @@ public class Simulator {
     }
 
     class LoadProgramAction extends AbstractAction {
-        public LoadProgramAction() {
+		private static final long serialVersionUID = 5027158417205513204L;
+
+		public LoadProgramAction() {
             super("Load Program...", null);
             putValue(SHORT_DESCRIPTION, "Load a program into memory");
             putValue(MNEMONIC_KEY, KeyEvent.VK_L);
@@ -499,6 +533,7 @@ public class Simulator {
                             while (dis.available() != 0) {
                                 program[i++] = dis.readByte();
                             }
+                            dis.close();
 
                             // Now load the program at the starting address.
                             loadProgram(program, preferences.getProgramStartAddress());
@@ -531,7 +566,10 @@ public class Simulator {
     }
 
     class LoadRomAction extends AbstractAction {
-        public LoadRomAction() {
+    	
+		private static final long serialVersionUID = -2054138541145866213L;
+
+		public LoadRomAction() {
             super("Load ROM...", null);
             putValue(SHORT_DESCRIPTION, "Load a ROM image");
             putValue(MNEMONIC_KEY, KeyEvent.VK_R);
@@ -586,7 +624,10 @@ public class Simulator {
     }
 
     class ShowPrefsAction extends AbstractAction {
-        public ShowPrefsAction() {
+
+		private static final long serialVersionUID = 8341506830066378667L;
+
+		public ShowPrefsAction() {
             super("Preferences...", null);
             putValue(SHORT_DESCRIPTION, "Show Preferences Dialog");
             putValue(MNEMONIC_KEY, KeyEvent.VK_P);
@@ -598,7 +639,10 @@ public class Simulator {
     }
 
     class SelectMachineAction extends AbstractAction {
-        public SelectMachineAction() {
+
+		private static final long serialVersionUID = 8546901767597330165L;
+
+		public SelectMachineAction() {
             super("Switch emulated machine...", null);
             putValue(SHORT_DESCRIPTION, "Select the type of the machine to be emulated");
             putValue(MNEMONIC_KEY, KeyEvent.VK_M);
@@ -624,7 +668,10 @@ public class Simulator {
     }
 
     class QuitAction extends AbstractAction {
-        public QuitAction() {
+
+		private static final long serialVersionUID = -2441768155660815441L;
+
+		public QuitAction() {
             super("Quit", null);
             putValue(SHORT_DESCRIPTION, "Exit the Simulator");
             putValue(MNEMONIC_KEY, KeyEvent.VK_Q);
@@ -640,7 +687,9 @@ public class Simulator {
     }
 
     class SetFontAction extends AbstractAction {
-        private int size;
+
+		private static final long serialVersionUID = 8141832236615645941L;
+		private int size;
 
         public SetFontAction(int size) {
             super(Integer.toString(size) + " pt", null);
@@ -660,7 +709,9 @@ public class Simulator {
     }
 
     class SetSpeedAction extends AbstractAction {
-        private int speed;
+
+		private static final long serialVersionUID = -5892737763592677769L;
+		private int speed;
 
         public SetSpeedAction(int speed) {
             super(Integer.toString(speed) + " MHz", null);
@@ -679,7 +730,9 @@ public class Simulator {
     }
 
     class SetCpuAction extends AbstractAction {
-        private Cpu.CpuBehavior behavior;
+
+		private static final long serialVersionUID = 2492067311123716161L;
+		private Cpu.CpuBehavior behavior;
 
         public SetCpuAction(String cpu, Cpu.CpuBehavior behavior) {
             super(cpu, null);
@@ -694,7 +747,10 @@ public class Simulator {
     }
 
     class ToggleTraceWindowAction extends AbstractAction {
-        public ToggleTraceWindowAction() {
+
+		private static final long serialVersionUID = 3021007343943521238L;
+
+		public ToggleTraceWindowAction() {
             super("Trace Log", null);
             putValue(SHORT_DESCRIPTION, "Show or Hide the Trace Log Window");
         }
@@ -712,7 +768,10 @@ public class Simulator {
     }
 
     class ToggleMemoryWindowAction extends AbstractAction {
-        public ToggleMemoryWindowAction() {
+
+		private static final long serialVersionUID = -7251826506674984872L;
+
+		public ToggleMemoryWindowAction() {
             super("Memory Window", null);
             putValue(SHORT_DESCRIPTION, "Show or Hide the Memory Window");
         }
@@ -729,7 +788,10 @@ public class Simulator {
     }
 
     class ToggleVideoWindowAction extends AbstractAction {
-        public ToggleVideoWindowAction() {
+
+		private static final long serialVersionUID = 3507773655310063795L;
+
+		public ToggleVideoWindowAction() {
             super("Video Window", null);
             putValue(SHORT_DESCRIPTION, "Show or Hide the Video Window");
         }
@@ -746,7 +808,10 @@ public class Simulator {
     }
 
     class ToggleBreakpointWindowAction extends AbstractAction {
-        public ToggleBreakpointWindowAction() {
+ 
+		private static final long serialVersionUID = -5703981428188406807L;
+
+		public ToggleBreakpointWindowAction() {
             super("Breakpoints...", null);
             putValue(SHORT_DESCRIPTION, "Show or Hide Breakpoints");
         }
@@ -763,7 +828,9 @@ public class Simulator {
     }
 
     class SimulatorMenu extends JMenuBar {
-        // Menu Items
+
+		private static final long serialVersionUID = -1348405322762136602L;
+		// Menu Items
         private JMenuItem loadProgramItem;
         private JMenuItem loadRomItem;
 

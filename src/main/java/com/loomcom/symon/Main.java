@@ -26,6 +26,7 @@
 package com.loomcom.symon;
 
 import com.loomcom.symon.machines.CNP1Machine;
+import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.machines.MulticompMachine;
 import com.loomcom.symon.machines.SimpleMachine;
 import com.loomcom.symon.machines.SymonMachine;
@@ -44,7 +45,7 @@ public class Main {
      */
     public static void main(String args[]) throws Exception {
         
-        Class machineClass = SymonMachine.class;
+        Class<? extends Machine> machineClass = SymonMachine.class;
         for(int i = 0; i < args.length; ++i) {
             String arg = args[i].toLowerCase(Locale.ENGLISH);
             if(arg.equals("-machine") && (i+1) < args.length) {

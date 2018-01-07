@@ -41,7 +41,9 @@ import java.awt.event.ActionListener;
  */
 public class BreakpointsWindow extends JFrame {
 
-    private static final Logger logger = LoggerFactory.getLogger(BreakpointsWindow.class);
+	private static final long serialVersionUID = 6173647166186654323L;
+
+	private static final Logger logger = LoggerFactory.getLogger(BreakpointsWindow.class);
 
     private static final Dimension FRAME_SIZE = new Dimension(240, 280);
     private static final String EMPTY_STRING = "";

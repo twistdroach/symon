@@ -39,7 +39,11 @@ import java.awt.event.ActionListener;
  */
 public class StatusPanel extends JPanel {
 
-    private ImageIcon carryOn;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 5787063347795509620L;
+	private ImageIcon carryOn;
     private ImageIcon carryOff;
     private ImageIcon zeroOn;
     private ImageIcon zeroOff;

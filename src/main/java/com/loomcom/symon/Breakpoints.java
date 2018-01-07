@@ -9,7 +9,8 @@ import java.util.TreeSet;
 
 public class Breakpoints extends AbstractTableModel {
 
-    private TreeSet<Integer> breakpoints;
+	private static final long serialVersionUID = 330673324190303190L;
+	private TreeSet<Integer> breakpoints;
     private Simulator simulator;
 
     public Breakpoints(Simulator simulator) {

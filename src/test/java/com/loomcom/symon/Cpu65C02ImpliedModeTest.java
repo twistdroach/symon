@@ -1,12 +1,8 @@
 package com.loomcom.symon;
 
 import com.loomcom.symon.devices.Memory;
-import com.loomcom.symon.exceptions.MemoryAccessException;
-import junit.framework.*;
 
-import static junit.framework.TestCase.assertFalse;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import junit.framework.TestCase;
 
 /**
  * Test for Zero Page Indirect addressing mode, found on some instructions

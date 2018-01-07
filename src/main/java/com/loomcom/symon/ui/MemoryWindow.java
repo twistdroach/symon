@@ -47,7 +47,12 @@ import java.util.EventObject;
  */
 public class MemoryWindow extends JFrame implements ActionListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(MemoryWindow.class);
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 9095613011022440750L;
+
+	private static final Logger logger = LoggerFactory.getLogger(MemoryWindow.class);
 
     private MemoryTableModel memoryTableModel;
     private JTable memoryTable;
@@ -232,7 +237,12 @@ public class MemoryWindow extends JFrame implements ActionListener {
      */
     private class MemoryTable extends JTable {
 
-        public MemoryTable(TableModel tableModel) {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 2198262870605699548L;
+
+		public MemoryTable(TableModel tableModel) {
             super(tableModel);
         }
 
@@ -252,7 +262,12 @@ public class MemoryWindow extends JFrame implements ActionListener {
 
     private class MemoryTableCellRenderer extends DefaultTableCellRenderer {
 
-        @Override
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 7634166872147386721L;
+
+		@Override
         public Component getTableCellRendererComponent(JTable table, Object value,
                                                        boolean isSelected, boolean hasFocus,
                                                        int row, int col) {
@@ -274,7 +289,11 @@ public class MemoryWindow extends JFrame implements ActionListener {
      */
     private class MemoryTableModel extends AbstractTableModel {
 
-        private Bus bus;
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 223699313473854617L;
+		private Bus bus;
         private int pageNumber;
 
         private static final int COLUMN_COUNT = 17;

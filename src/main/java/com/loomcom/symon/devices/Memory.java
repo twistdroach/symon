@@ -87,6 +87,7 @@ public class Memory extends Device {
                 while (dis.available() != 0) {
                     mem[i++] = dis.readUnsignedByte();
                 }
+                dis.close();
             }
         } else {
             throw new IOException("Cannot open file " + file);

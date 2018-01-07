@@ -28,7 +28,12 @@ package com.loomcom.symon.exceptions;
  * accessed.
  */
 public class MemoryAccessException extends SymonException {
-  public MemoryAccessException(String msg) {
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = -1033666113606929587L;
+
+public MemoryAccessException(String msg) {
     super(msg);
   }
 }

@@ -28,7 +28,12 @@ package com.loomcom.symon.exceptions;
  * Superclass for all symon Exceptions.
  */
 public class SymonException extends Exception {
-    public SymonException(String msg) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -5971116782135243601L;
+
+	public SymonException(String msg) {
         super(msg);
     }
 }

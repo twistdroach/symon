@@ -92,7 +92,6 @@ public abstract class Device implements Comparable<Device> {
         return memoryRange.endAddress();
     }
 
-    @SuppressWarnings("unused")
     public int startAddress() {
         return memoryRange.startAddress();
     }
@@ -101,7 +100,6 @@ public abstract class Device implements Comparable<Device> {
         return name;
     }
 
-    @SuppressWarnings("unused")
     public void setName(String name) {
         this.name = name;
     }

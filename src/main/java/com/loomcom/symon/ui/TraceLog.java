@@ -36,7 +36,11 @@ import java.awt.*;
  */
 public class TraceLog extends JFrame {
 
-    private final FifoRingBuffer<CpuState> traceLog;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -8957337082721666597L;
+	private final FifoRingBuffer<CpuState> traceLog;
     private final JTextArea                    traceLogTextArea;
 
     private static final Dimension MIN_SIZE       = new Dimension(320, 200);

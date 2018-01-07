@@ -27,7 +27,12 @@ package com.loomcom.symon.exceptions;
  * Indicates that a FIFO has underrun.
  */
 public class FifoUnderrunException extends SymonException {
-  public FifoUnderrunException(String msg) {
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = -1588427118657352502L;
+
+public FifoUnderrunException(String msg) {
     super(msg);
   }
 }

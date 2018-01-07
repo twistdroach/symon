@@ -59,7 +59,12 @@ import static java.lang.System.*;
  */
 public class VideoWindow extends JFrame implements DeviceChangeListener {
 
-    private static final Logger logger = Logger.getLogger(VideoWindow.class.getName());
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -2026689525070058843L;
+
+	private static final Logger logger = Logger.getLogger(VideoWindow.class.getName());
 
     private static final int CHAR_WIDTH = 8;
     private static final int CHAR_HEIGHT = 8;
@@ -86,7 +91,12 @@ public class VideoWindow extends JFrame implements DeviceChangeListener {
      * A panel representing the composite video output, with fast Graphics2D painting.
      */
     private class VideoPanel extends JPanel {
-        @Override
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 6576873171278598445L;
+
+		@Override
         public void paintComponent(Graphics g) {
             try {
                 for (int i = 0; i < crtc.getPageSize(); i++) {
