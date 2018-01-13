@@ -44,7 +44,7 @@ public class Main {
      * @param args Program arguments
      */
     public static void main(String args[]) throws Exception {
-        Machine machineInstance = MachineFactory.createMachine(MachineEnum.SYMON);
+        Machine machineInstance = null;
         for(int i = 0; i < args.length; ++i) {
             String arg = args[i].toLowerCase(Locale.ENGLISH);
             if(arg.equals("-machine") && (i+1) < args.length) {

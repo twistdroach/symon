@@ -63,7 +63,7 @@ public class MachineFactory {
 			if (map.containsKey(name)) {
 				return map.get(name);
 			} else {
-				return SYMON;
+				return null;
 			}
 		}
 
