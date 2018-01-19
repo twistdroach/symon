@@ -57,7 +57,7 @@ public class CNP1Machine implements Machine {
     private static final int VIA_BASE = 0x4010;
     
     // ACIA at $4100-$4103
-    private static final int ACIA_BASE = 0x4100;
+    private static final int ACIA_BASE = 0x4400;
     
     // 16KB ROM at $C000-$FFFF
     private static final int ROM_BASE = 0x8000;
