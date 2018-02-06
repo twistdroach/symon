@@ -343,7 +343,7 @@ public class Simulator {
             if (isColdReset) {
                 Memory mem = machine.getRam();
                 if (mem != null) {
-                    mem.fill(0);
+                    mem.reset();
                 }
             }
             // Update status.

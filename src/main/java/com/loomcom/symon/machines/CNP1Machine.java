@@ -37,6 +37,7 @@ import com.loomcom.symon.devices.Acia6551;
 import com.loomcom.symon.devices.Crtc;
 import com.loomcom.symon.devices.Memory;
 import com.loomcom.symon.devices.Pia;
+import com.loomcom.symon.devices.RandomFillMemory;
 import com.loomcom.symon.devices.Via6522;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 
@@ -53,8 +54,8 @@ public class CNP1Machine implements Machine {
     private static final int MEMORY_BASE = 0x0000;
     private static final int MEMORY_SIZE = 0x4000;
     
-    // VIA at $4010-$401F
-    private static final int VIA_BASE = 0x4010;
+    // VIA at $6000-$600F
+    private static final int VIA_BASE = 0x6000;
     
     // ACIA at $4100-$4103
     private static final int ACIA_BASE = 0x4400;
@@ -64,7 +65,7 @@ public class CNP1Machine implements Machine {
     private static final int ROM_SIZE = 0x8000;
     
     private final Bus bus;
-    private final Memory ram;
+    private final RandomFillMemory ram;
     private final Cpu cpu;
     private final Acia   acia;
     private final Pia    via;
@@ -73,7 +74,7 @@ public class CNP1Machine implements Machine {
     public CNP1Machine() throws Exception {
         this.bus = new Bus(BUS_BOTTOM, BUS_TOP);
         this.cpu = new Cpu(CpuBehavior.CMOS_6502);
-        this.ram = new Memory(MEMORY_BASE, MEMORY_BASE + MEMORY_SIZE - 1, false);
+        this.ram = new RandomFillMemory(MEMORY_BASE, MEMORY_BASE + MEMORY_SIZE - 1, false);
         this.via = new Via6522(VIA_BASE);
         this.acia = new Acia6551(ACIA_BASE);
         
