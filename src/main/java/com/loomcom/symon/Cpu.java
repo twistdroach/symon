@@ -25,6 +25,10 @@ package com.loomcom.symon;
 
 import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.util.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1232,10 +1236,24 @@ public class Cpu implements InstructionTable {
                 break;
         }
 
+        step_peripherals();
+        
         delayLoop(state.ir);
 
         // Peek ahead to the next insturction and arguments
         peekAhead();
+    }
+    
+    List<StepListener> stepListeners = new ArrayList<StepListener>();
+    
+    private void step_peripherals() {
+    	for (StepListener listener : stepListeners) {
+    		listener.step();
+    	}
+    }
+    
+    public void registerStepListener(StepListener listener) {
+    	stepListeners.add(listener);
     }
 
     private void peekAhead() throws MemoryAccessException {

@@ -26,6 +26,10 @@ package com.loomcom.symon;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.HeadlessException;
+import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -36,6 +40,8 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -166,6 +172,9 @@ public class Simulator {
      * The list of step counts that will appear in the "Step" drop-down.
      */
     private static final String[] STEPS = {"1", "5", "10", "20", "50", "100"};
+    
+    private final Queue<Character> pasteCharacterQueue = new ConcurrentLinkedQueue<Character>();
+    private static final boolean SWAP_CR_AND_LF       = true;
 
     public Simulator(Machine machineInstance) throws Exception {
         this.breakpoints = new Breakpoints(this);
@@ -215,6 +224,7 @@ public class Simulator {
         stepButton = new JButton("Step");
         JButton softResetButton = new JButton("Soft Reset");
         JButton hardResetButton = new JButton("Hard Reset");
+        JButton pasteButton = new JButton("Paste");
 
         stepCountBox = new JComboBox<>(STEPS);
         stepCountBox.addActionListener(new ActionListener() {
@@ -235,6 +245,7 @@ public class Simulator {
         buttonContainer.add(stepCountBox);
         buttonContainer.add(softResetButton);
         buttonContainer.add(hardResetButton);
+        buttonContainer.add(pasteButton);
 
         // Left side - console
         consoleContainer.add(console, BorderLayout.CENTER);
@@ -278,6 +289,16 @@ public class Simulator {
                 // If this was a CTRL-click, do a hard reset.
                 Simulator.this.handleReset(true);
             }
+        });
+        
+        pasteButton.addActionListener(new ActionListener() {
+        	@Override
+        	public void actionPerformed(ActionEvent actionEvent) {
+        		String clipContents = Simulator.this.getClipboard();
+        		for (char ch : clipContents.toCharArray()) {
+        			pasteCharacterQueue.add(ch);
+        		}
+        	}
         });
 
         mainWindow.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -383,15 +404,31 @@ public class Simulator {
             console.print(Character.toString((char) machine.getAcia().txRead(true)));
             console.repaint();
         }
-
-        // If a key has been pressed, fill the ACIA.
-        try {
-            if (machine.getAcia() != null && console.hasInput()) {
-                machine.getAcia().rxWrite((int) console.readInputChar());
+        
+        if (machine.getAcia() != null) {
+            Character ch = null;
+            if (!machine.getAcia().hasRxChar()) {
+            	// only grab a char if the ACIA is ready for it (poor man's flow control)
+            	ch = pasteCharacterQueue.poll();
+            	//if we are pasting, ignore user input until we are done
+                if (ch != null) {
+                	if (SWAP_CR_AND_LF && ch == 0x0a) {
+                        ch = 0x0d;
+                	}
+                	machine.getAcia().rxWrite((int) ch.charValue());
+                } else {
+        	        // If a key has been pressed, fill the ACIA.
+        	        try {
+        	            if (console.hasInput()) {
+        	                machine.getAcia().rxWrite((int) console.readInputChar());
+        	            }
+        	        } catch (FifoUnderrunException ex) {
+        	            logger.error("Console type-ahead buffer underrun!");
+        	        }
+                }
             }
-        } catch (FifoUnderrunException ex) {
-            logger.error("Console type-ahead buffer underrun!");
         }
+        
 
         if (videoWindow != null && stepsSinceLastCrtcRefresh++ > STEPS_BETWEEN_CRTC_REFRESHES) {
             stepsSinceLastCrtcRefresh = 0;
@@ -1030,6 +1067,21 @@ public class Simulator {
                 }
             }
         });
+    }
+    
+    public String getClipboard(){
+        try {
+            return (String)Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
+        } catch (HeadlessException e) {
+            logger.warn("This should never happen", e);            
+        } catch (UnsupportedFlavorException e) {
+            logger.warn("Paste failed due to unsupported flavor", e);           
+        } catch (IOException e) {
+            logger.warn("Data is unable to be retrieved", e);
+        } catch (IllegalStateException e) {
+        	logger.debug("No data in clipboard", e);
+        }
+        return "";
     }
 
 }

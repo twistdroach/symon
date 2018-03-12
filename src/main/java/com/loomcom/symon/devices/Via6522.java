@@ -23,15 +23,15 @@
 
 package com.loomcom.symon.devices;
 
+import com.loomcom.symon.StepListener;
 import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 
 /**
  * Very basic implementation of a MOS 6522 VIA.
  *
- * TODO: Implement timers as threads.
  */
-public class Via6522 extends Pia {
+public class Via6522 extends Pia implements StepListener {
     public static final int VIA_SIZE = 16;
 
     enum Register {
@@ -106,4 +106,10 @@ public class Via6522 extends Pia {
 
         return 0;
     }
+
+	@Override
+	public void step() {
+		// TODO Auto-generated method stub
+		
+	}
 }
