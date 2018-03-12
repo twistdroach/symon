@@ -225,6 +225,9 @@ public class Simulator {
         JButton softResetButton = new JButton("Soft Reset");
         JButton hardResetButton = new JButton("Hard Reset");
         JButton pasteButton = new JButton("Paste");
+        JButton assertNmi = new JButton("NMI");
+        assertNmi.setToolTipText("Manually assert a non-maskable interrupt");
+        JButton assertIrq = new JButton("IRQ");
 
         stepCountBox = new JComboBox<>(STEPS);
         stepCountBox.addActionListener(new ActionListener() {
@@ -246,6 +249,8 @@ public class Simulator {
         buttonContainer.add(softResetButton);
         buttonContainer.add(hardResetButton);
         buttonContainer.add(pasteButton);
+        buttonContainer.add(assertNmi);
+        buttonContainer.add(assertIrq);
 
         // Left side - console
         consoleContainer.add(console, BorderLayout.CENTER);
@@ -298,6 +303,20 @@ public class Simulator {
         		for (char ch : clipContents.toCharArray()) {
         			pasteCharacterQueue.add(ch);
         		}
+        	}
+        });
+        
+        assertNmi.addActionListener(new ActionListener() {
+        	@Override
+        	public void actionPerformed(ActionEvent actionEvent) {
+        		Simulator.this.machine.getBus().assertNmi();
+        	}
+        });
+        
+        assertIrq.addActionListener(new ActionListener() {
+        	@Override
+        	public void actionPerformed(ActionEvent actionEvent) {
+        		Simulator.this.machine.getBus().assertIrq();
         	}
         });
 
