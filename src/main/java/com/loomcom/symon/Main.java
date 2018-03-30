@@ -33,7 +33,6 @@ import javax.swing.UIManager;
 
 import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.machines.MachineFactory;
-import com.loomcom.symon.machines.MachineFactory.MachineEnum;
 
 public class Main {
     

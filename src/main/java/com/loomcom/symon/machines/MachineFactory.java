@@ -30,6 +30,11 @@ public class MachineFactory {
 			public Machine create() throws Exception {
 				return new CNP1Machine();
 			}
+		},
+		DODO("DoDo-6502", "dodo") {
+			public Machine create() throws Exception {
+				return new DodoMachine();
+			}
 		};
 
 		private final String name;

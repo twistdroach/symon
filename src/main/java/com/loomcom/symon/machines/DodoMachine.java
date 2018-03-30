@@ -39,29 +39,27 @@ import com.loomcom.symon.devices.Crtc;
 import com.loomcom.symon.devices.Memory;
 import com.loomcom.symon.devices.Pia;
 import com.loomcom.symon.devices.RandomFillMemory;
+import com.loomcom.symon.devices.SSD1305;
 import com.loomcom.symon.devices.Via6522;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 
-/**
- * The CNP1 is a simple 6502 machine
- */
-public class CNP1Machine implements Machine {
-	private final static Logger logger = LoggerFactory.getLogger(CNP1Machine.class.getName());
+public class DodoMachine implements Machine {
+	private final static Logger logger = LoggerFactory.getLogger(DodoMachine.class.getName());
 
     private static final int BUS_BOTTOM = 0x0000;
     private static final int BUS_TOP    = 0xffff;
 
-    // 16K of RAM from $0000 - $3FFF
+    //TODO Is this size correct?
     private static final int MEMORY_BASE = 0x0000;
-    private static final int MEMORY_SIZE = 0x4000;
+    private static final int MEMORY_SIZE = 0x7F00;
     
-    // VIA at $6000-$600F
-    private static final int VIA_BASE = 0x6000;
+    private static final int VIA_BASE = 0x7F00;
     
-    // ACIA at $4100-$4103
-    private static final int ACIA_BASE = 0x4400;
+    private static final int ACIA_BASE = 0x7F10;
     
-    // 16KB ROM at $C000-$FFFF
+    // Display at $7F20
+    private static final int DISP_BASE = 0x7F20;
+    
     private static final int ROM_BASE = 0x8000;
     private static final int ROM_SIZE = 0x8000;
     
@@ -70,19 +68,22 @@ public class CNP1Machine implements Machine {
     private final Cpu cpu;
     private final Acia   acia;
     private final Pia    via;
+    private final SSD1305 ssd1305;
     private       Memory rom;
 
-    public CNP1Machine() throws Exception {
+    public DodoMachine() throws Exception {
         this.bus = new Bus(BUS_BOTTOM, BUS_TOP);
         this.cpu = new Cpu(CpuBehavior.CMOS_6502);
         this.ram = new RandomFillMemory(MEMORY_BASE, MEMORY_BASE + MEMORY_SIZE - 1, false);
         this.via = new Via6522(VIA_BASE);
         this.acia = new Acia6551(ACIA_BASE);
+        this.ssd1305 = new SSD1305(DISP_BASE);
         
         bus.addCpu(cpu);
         bus.addDevice(ram);
         bus.addDevice(via);
         bus.addDevice(acia);
+        bus.addDevice(ssd1305);
         
         // TODO: Make this configurable, of course.
         File romImage = new File("rom.bin");
