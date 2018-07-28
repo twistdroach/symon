@@ -27,7 +27,9 @@ import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.util.Utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +80,8 @@ public class Cpu implements InstructionTable {
 
     /* start time of op execution, needed for speed simulation */
     private long opBeginTime;
+    
+    private Map<String, String> debugMap = new HashMap<String, String>();
 
     /**
      * Construct a new CPU.
@@ -157,6 +161,14 @@ public class Cpu implements InstructionTable {
             step();
         }
     }
+    
+    public void addDebugSymbol(String address, String symbol) {
+    	debugMap.put(address,  symbol);
+    }
+    
+    public void clearDebugSymbols() {
+    	debugMap.clear();
+    }
 
     /**
      * Performs an individual instruction cycle.
@@ -165,7 +177,12 @@ public class Cpu implements InstructionTable {
         opBeginTime = System.nanoTime();
 
         // Store the address from which the IR was read, for debugging
+        //TODO hide this stuff in CpuState
         state.lastPc = state.pc;
+        String lastPcSymbol = debugMap.get(Utils.wordToHex(state.lastPc));
+        if (lastPcSymbol == null)
+        	lastPcSymbol = "";
+        state.lastPcSymbol = lastPcSymbol;
 
         // Check for Interrupts before doing anything else.
         // This will set the PC and jump to the interrupt vector.

@@ -47,6 +47,7 @@ public class CpuState {
     public boolean irqAsserted;
     public boolean nmiAsserted;
     public int lastPc;
+    public String lastPcSymbol;
 
     /* Status Flag Register bits */
     public boolean carryFlag;
@@ -77,6 +78,7 @@ public class CpuState {
         this.ir = s.ir;
         this.nextIr = s.nextIr;
         this.lastPc = s.lastPc;
+        this.lastPcSymbol = s.lastPcSymbol;
         this.args[0] = s.args[0];
         this.args[1] = s.args[1];
         this.nextArgs[0] = s.nextArgs[0];
@@ -144,14 +146,14 @@ public class CpuState {
         switch (Cpu.instructionSizes[ir]) {
             case 0:
             case 1:
-                return Utils.wordToHex(lastPc) + "  " +
+                return String.format("%-20s", lastPcSymbol) + Utils.wordToHex(lastPc) + "  " +
                        Utils.byteToHex(ir) + "      ";
             case 2:
-                return Utils.wordToHex(lastPc) + "  " +
+                return String.format("%-20s", lastPcSymbol) + Utils.wordToHex(lastPc) + "  " +
                        Utils.byteToHex(ir) + " " +
                        Utils.byteToHex(args[0]) + "   ";
             case 3:
-                return Utils.wordToHex(lastPc) + "  " +
+                return String.format("%-20s", lastPcSymbol) + Utils.wordToHex(lastPc) + "  " +
                        Utils.byteToHex(ir) + " " +
                        Utils.byteToHex(args[0]) + " " +
                        Utils.byteToHex(args[1]);

@@ -41,6 +41,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Queue;
+import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.swing.AbstractAction;
@@ -621,6 +622,60 @@ public class Simulator {
         }
     }
 
+    class LoadDebugAction extends AbstractAction {
+    	
+		private static final long serialVersionUID = -2054138541145866213L;
+
+		public LoadDebugAction() {
+            super("Load debug symbols...", null);
+            putValue(SHORT_DESCRIPTION, "Load a debug file output by CC65");
+            putValue(MNEMONIC_KEY, KeyEvent.VK_D);
+        }
+
+        public void actionPerformed(ActionEvent actionEvent) {
+            try {
+                int retVal = fileChooser.showOpenDialog(mainWindow);
+                if (retVal == JFileChooser.APPROVE_OPTION) {
+                    File debugFile = fileChooser.getSelectedFile();
+                    if (debugFile.canRead()) {
+                        long fileSize = debugFile.length();
+
+                        if (fileSize == 0) {
+                            throw new IOException("Debug file empty");
+                        }
+
+                        
+                        Scanner scanner = new Scanner(debugFile);
+                        while (scanner.hasNextLine()) {
+                        	String line = scanner.nextLine();
+                        	//TODO I'm sure this parsing needs to be more robust, but i don't see any doc on the format
+                        	String[] lineParts = line.split(" ");
+                        	if (lineParts.length != 3)
+                        		throw new IOException("Format of debug file unrecognized for line: " + line);
+                        	
+                        	String address = lineParts[1];
+                        	address = address.substring(2);
+                        	String symbol = lineParts[2];
+                        	machine.getCpu().addDebugSymbol(address, symbol);
+                        }
+                        
+                        logger.info("Debug file '{}' loaded.", debugFile.getName());
+                        
+                        // TODO: "Don't Show Again" checkbox
+                        JOptionPane.showMessageDialog(mainWindow,
+                                "Debug File Loaded Successfully",
+                                "OK",
+                                JOptionPane.PLAIN_MESSAGE);
+
+                    }
+                }
+            } catch (IOException ex) {
+                logger.error("Unable to read Debug file: {}", ex.getMessage());
+                JOptionPane.showMessageDialog(mainWindow, ex.getMessage(), "Failure", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+    
     class LoadRomAction extends AbstractAction {
     	
 		private static final long serialVersionUID = -2054138541145866213L;
@@ -933,6 +988,9 @@ public class Simulator {
                 loadRomItem = new JMenuItem(new LoadRomAction());
                 fileMenu.add(loadRomItem);
             }
+            
+            JMenuItem loadDebugItem = new JMenuItem(new LoadDebugAction());
+            fileMenu.add(loadDebugItem);
 
             JMenuItem prefsItem = new JMenuItem(new ShowPrefsAction());
             fileMenu.add(prefsItem);
