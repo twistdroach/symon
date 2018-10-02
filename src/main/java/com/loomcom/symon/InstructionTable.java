@@ -39,24 +39,38 @@ public interface InstructionTable {
          *
          * NB: Does NOT implement "unimplemented" NMOS instructions.
          */
-        NMOS_WITH_ROR_BUG,
+        NMOS_WITH_ROR_BUG(false),
 
         /**
          * All NMOS 6502's have a bug with the indirect JMP instruction. If the
          *
          * NB: Does NOT implement "unimplemented" NMOS instructions.
          */
-        NMOS_6502,
+        NMOS_6502(false),
 
         /**
          * Emulate a CMOS 65C02, with all CMOS instructions and addressing modes.
          */
-        CMOS_6502,
+        CMOS_6502(true),
 
         /**
          * Emulate a CMOS 65C816.
          */
-        CMOS_65816
+        CMOS_65816(true);
+
+        private final boolean cmos;
+
+        CpuBehavior(boolean cmos) {
+            this.cmos = cmos;
+        }
+
+        public boolean isCmos() {
+            return cmos;
+        }
+
+        public boolean isNmos() {
+            return !cmos;
+        }
     }
 
     /**
