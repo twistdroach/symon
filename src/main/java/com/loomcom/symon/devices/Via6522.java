@@ -23,6 +23,8 @@
 
 package com.loomcom.symon.devices;
 
+import org.joou.UByte;
+
 import com.loomcom.symon.StepListener;
 import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.exceptions.MemoryRangeException;
@@ -33,11 +35,14 @@ import com.loomcom.symon.exceptions.MemoryRangeException;
  */
 public class Via6522 extends Pia implements StepListener {
     public static final int VIA_SIZE = 16;
+    private final UByte[] registers = new UByte[VIA_SIZE];
+    
 
-    enum Register {
+    private static enum Register {
         ORB, ORA, DDRB, DDRA, T1C_L, T1C_H, T1L_L, T1L_H,
         T2C_L, T2C_H, SR, ACR, PCR, IFR, IER, ORA_H
     }
+    private static final Register[] addressToRegister = Register.values();
 
     public Via6522(int address) throws MemoryRangeException {
         super(address, address + VIA_SIZE - 1, "MOS 6522 VIA");
@@ -45,13 +50,12 @@ public class Via6522 extends Pia implements StepListener {
 
     @Override
     public void write(int address, int data) throws MemoryAccessException {
-        Register[] registers = Register.values();
 
-        if (address >= registers.length) {
+        if (address >= addressToRegister.length) {
             throw new MemoryAccessException("Unknown register: " + address);
         }
 
-        Register r = registers[address];
+        Register r = addressToRegister[address];
 
         switch (r) {
             case ORA:
@@ -72,17 +76,19 @@ public class Via6522 extends Pia implements StepListener {
             case ORA_H:
             default:
         }
+        
+        //TODO: may not want to do this...
+        registers[r.ordinal()] = UByte.valueOf(data);
     }
 
     @Override
     public int read(int address, boolean cpuAccess) throws MemoryAccessException {
-        Register[] registers = Register.values();
-
-        if (address >= registers.length) {
+    	
+        if (address >= addressToRegister.length) {
             throw new MemoryAccessException("Unknown register: " + address);
         }
 
-        Register r = registers[address];
+        Register r = addressToRegister[address];
 
         switch (r) {
             case ORA:
@@ -104,7 +110,7 @@ public class Via6522 extends Pia implements StepListener {
             default:
         }
 
-        return 0;
+        return registers[r.ordinal()].intValue();
     }
 
 	@Override
