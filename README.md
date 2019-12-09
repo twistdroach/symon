@@ -1,13 +1,13 @@
 SYMON - A 6502 System Simulator
 ===============================
 
-**Version:** 1.2.1
+**Version:** 1.3.0
 
-**Last Updated:** 8 January, 2016
+**Last Updated:** 25 February, 2018
 
 See the file COPYING for license.
 
-![Symon Simulator in Action](http://www.loomcom.com/symon/screenshots/full.jpg)
+![Symon Simulator in Action](https://github.com/sethm/symon/raw/master/screenshots/full.jpg)
 
 ## 1.0 About
 
@@ -16,9 +16,9 @@ Technologies 6502 microprocessor and compatibles. Symon is implemented
 in Java. Its core goals are accuracy, ease of development, clear
 documentation, and extensive test suites for validating correctness.
 
-Symon simulates a complete system with a 1 MHz NMOS 6502, 32KB of RAM,
-16KB of ROM, a MOS 6551 or Motorola 6850 ACIA, a MOS 6522 VIA, and an
-experimental 6545 CRTC.
+Symon simulates a complete system with a 1 MHz NMOS 6502 or CMOS
+65C02, 32KB of RAM, 16KB of ROM, a MOS 6551 or Motorola 6850 ACIA, a
+MOS 6522 VIA, and an experimental 6545 CRTC.
 
 Symon has extensive unit tests to verify correctness, and fully passes
 Klaus Dormann's 6502 Functional Test Suite as of version 0.8.2
@@ -66,7 +66,7 @@ memory.
 
 ### 3.2 Serial Console and CPU Status
 
-![Serial Console](http://www.loomcom.com/symon/screenshots/console.png)
+![Serial Console](https://github.com/sethm/symon/raw/master/screenshots/console.png)
 
 The main window of the simulator acts as the primary Input/Output
 system through a virtual serial terminal. The terminal is attached to
@@ -78,13 +78,13 @@ It also provides CPU status. Contents of the accumulator, index
 registers, processor status flags, disassembly of the instruction
 register, and stack pointer are all displayed.
 
-![Font Selection](http://www.loomcom.com/symon/screenshots/font_selection.png)
+![Font Selection](https://github.com/sethm/symon/raw/master/screenshots/font_selection.png)
 
 The console supports font sizes from 10 to 20 points.
 
 ### 3.3 ROM Loading
 
-![ROM Loading](http://www.loomcom.com/symon/screenshots/load_rom.png)
+![ROM Loading](https://github.com/sethm/symon/raw/master/screenshots/load_rom.png)
 
 Symon can load any appropriately sized ROM image. The Symon
 architecture expects as 16KB (16384 byte) ROM image, while the
@@ -95,32 +95,32 @@ address.
 
 ### 3.4 Memory Window
 
-![Memory Window](http://www.loomcom.com/symon/screenshots/memory_window.png)
+![Memory Window](https://github.com/sethm/symon/raw/master/screenshots/memory_window.png)
 
 Memory contents can be viewed (and edited) one page at a time through the Memory Window.
 
 ### 3.5 Trace Log
 
-![Trace Log](http://www.loomcom.com/symon/screenshots/trace_log.png)
+![Trace Log](https://github.com/sethm/symon/raw/master/screenshots/trace_log.png)
 
 The last 20,000 execution steps are disassembled and logged to the Trace Log
 Window.
 
 ### 3.6 Simulator Speeds
 
-![Speeds](http://www.loomcom.com/symon/screenshots/simulator_menu.png)
+![Speeds](https://github.com/sethm/symon/raw/master/screenshots/simulator_menu.png)
 
 Simulated speeds may be set from 1MHz to 8MHz.
 
 ### 3.7 Breakpoints
 
-![Breakpoints](http://www.loomcom.com/symon/screenshots/breakpoints.png)
+![Breakpoints](https://github.com/sethm/symon/raw/master/screenshots/breakpoints.png)
 
 Breakpoints can be set and removed through the Breakpoints window.
 
 ### 3.8 Experimental 6545 CRTC Video
 
-![Composite Video](http://www.loomcom.com/symon/screenshots/video_window.png)
+![Composite Video](https://github.com/sethm/symon/raw/master/screenshots/video_window.png)
 
 This feature is highly experimental. It's possible to open a video window
 from the "View" menu.  This window simulates the output of a MOS 6545 CRT
@@ -154,7 +154,7 @@ between the simulated 6545 and a real 6545:
     of 6545 programming tricks that were achieved by updating the
     frame address during vertical and horizontal sync times are not
     achievable.  There is no way (for example) to change the Display Start
-    Address (R12 and R13) while a frame is being drawn.  
+    Address (R12 and R13) while a frame is being drawn.
 
 For more information on the 6545 CRTC and its programming model, please see the following resources
 
@@ -235,16 +235,18 @@ running.
 
 ## 5.0 Revision History
 
+  - **1.3.0:** 24 February, 2018 - Adds support for 65C02 opcodes.
+
   - **1.2.1:** 8 January, 2016 - Remove dependency on Java 8. Now
     supports compiling and running under Java 1.7.
 
   - **1.2.0:** 3 January, 2016 - Add symbolic disassembly to breakpoints
     window.
-  
+
   - **1.1.1:** 2 January, 2016 - Minor enhancement: Allows breakpoints
     to be added with the Enter key.
 
-  - **1.1.0:** 31 December, 2015 - Fixed delay loop to better 
+  - **1.1.0:** 31 December, 2015 - Fixed delay loop to better
     simulate various clock speeds. Added ability to select clock
     speed at runtime. Status display now shows the next instruction
     to be executed, instead of the last instruction executed.
