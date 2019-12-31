@@ -7,6 +7,9 @@
     <version>1.3.0-SNAPSHOT</version>
     <name>symon</name>
     <url>http://www.loomcom.com/symon</url>
+    <prerequisites>
+    	<maven>3.6.1</maven>
+    </prerequisites>
     <properties>
         <project.build.sourceEncoding>
             UTF-8
@@ -43,9 +46,31 @@
     <build>
         <plugins>
             <plugin>
+		      <inherited>true</inherited>
+		      <groupId>org.apache.maven.plugins</groupId>
+		      <artifactId>maven-enforcer-plugin</artifactId>
+		        <version>3.0.0-M3</version>
+		        <executions>
+		          <execution>
+		            <id>enforce-maven-3</id>
+		            <goals>
+		              <goal>enforce</goal>
+		            </goals>
+		            <configuration>
+		              <rules>
+		                <requireMavenVersion>
+		                  <version>3.6.1</version>
+		                </requireMavenVersion>                
+		              </rules>
+		              <fail>true</fail>
+		            </configuration>
+		          </execution>
+		       </executions>
+		     </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.6</version>
+                <version>3.2.0</version>
                 <configuration>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -69,11 +94,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
+                <version>3.8.1</version>
                 <configuration>
                     <compilerArgument>-Xlint:unchecked</compilerArgument>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <release>11</release>
                 </configuration>
             </plugin>
 
@@ -81,7 +105,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.6</version>
+                <version>3.2.0</version>
                 <configuration>
                     <archive>
                         <manifest>
@@ -95,11 +119,18 @@
                     </archive>
                 </configuration>
             </plugin>
-
+			<plugin>
+			    <groupId>org.codehaus.mojo</groupId>
+			    <artifactId>versions-maven-plugin</artifactId>
+			    <version>2.7</version>
+			    <configuration>
+			        <generateBackupPoms>false</generateBackupPoms>
+			    </configuration>
+			</plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>1.2.1</version>
+                <version>1.6.0</version>
                 <configuration>
                     <mainClass>com.loomcom.symon.Simulator</mainClass>
                 </configuration>

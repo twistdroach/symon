@@ -46,6 +46,9 @@ public class Via6522 extends Pia implements StepListener {
 
     public Via6522(int address) throws MemoryRangeException {
         super(address, address + VIA_SIZE - 1, "MOS 6522 VIA");
+        for( int i = 0; i < registers.length; i++) {
+        	registers[i] = UByte.MIN;
+        }
     }
 
     @Override

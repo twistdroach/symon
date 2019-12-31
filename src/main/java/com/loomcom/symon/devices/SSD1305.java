@@ -3,7 +3,6 @@ package com.loomcom.symon.devices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.loomcom.symon.Cpu;
 import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 import com.loomcom.symon.util.Utils;

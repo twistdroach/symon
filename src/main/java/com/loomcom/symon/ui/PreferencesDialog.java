@@ -29,12 +29,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Observable;
 
 /**
  * Dialog window that allows the user to modify selected run-time settings of the simulator.
  */
-public class PreferencesDialog extends Observable implements Preferences {
+public class PreferencesDialog implements Preferences {
 
     private final JDialog dialog;
 
@@ -111,9 +110,6 @@ public class PreferencesDialog extends Observable implements Preferences {
                 haltOnBreak = haltOnBreakCheckBox.isSelected();
                 programLoadAddress = PreferencesDialog.this.hexToInt(programLoadAddressField.getText());
                 PreferencesDialog.this.updateUi();
-                // TODO: Actually check to see if values have changed, don't assume.
-                PreferencesDialog.this.setChanged();
-                PreferencesDialog.this.notifyObservers();
                 dialog.setVisible(false);
             }
         });

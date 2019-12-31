@@ -1927,6 +1927,9 @@ public class Cpu implements InstructionTable {
             case ZPY:
                 sb.append(" $").append(Utils.byteToHex(args[0])).append(",Y");
                 break;
+            default:
+            	sb.append(" ").append(instructionModes[opCode].toString());
+            	break;
         }
 
         return sb.toString();

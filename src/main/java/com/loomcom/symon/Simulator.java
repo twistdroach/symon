@@ -153,7 +153,7 @@ public class Simulator {
 
     private JButton runStopButton;
     private JButton stepButton;
-    private JComboBox<String> stepCountBox;
+    private final JComboBox<String> stepCountBox = new JComboBox<String>(STEPS);;
 
     private JFileChooser fileChooser;
     private PreferencesDialog preferences;
@@ -230,13 +230,11 @@ public class Simulator {
         assertNmi.setToolTipText("Manually assert a non-maskable interrupt");
         JButton assertIrq = new JButton("IRQ");
 
-        stepCountBox = new JComboBox<>(STEPS);
         stepCountBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    JComboBox cb = (JComboBox) actionEvent.getSource();
-                    stepsPerClick = Integer.parseInt((String) cb.getSelectedItem());
+                    stepsPerClick = Integer.parseInt((String) stepCountBox.getSelectedItem());
                 } catch (NumberFormatException ex) {
                     stepsPerClick = 1;
                     stepCountBox.setSelectedIndex(0);
@@ -645,18 +643,19 @@ public class Simulator {
                         }
 
                         
-                        Scanner scanner = new Scanner(debugFile);
-                        while (scanner.hasNextLine()) {
-                        	String line = scanner.nextLine();
-                        	//TODO I'm sure this parsing needs to be more robust, but i don't see any doc on the format
-                        	String[] lineParts = line.split(" ");
-                        	if (lineParts.length != 3)
-                        		throw new IOException("Format of debug file unrecognized for line: " + line);
-                        	
-                        	String address = lineParts[1];
-                        	address = address.substring(2);
-                        	String symbol = lineParts[2];
-                        	machine.getCpu().addDebugSymbol(address, symbol);
+                        try (Scanner scanner = new Scanner(debugFile)) {
+	                        while (scanner.hasNextLine()) {
+	                        	String line = scanner.nextLine();
+	                        	//TODO I'm sure this parsing needs to be more robust, but i don't see any doc on the format
+	                        	String[] lineParts = line.split(" ");
+	                        	if (lineParts.length != 3)
+	                        		throw new IOException("Format of debug file unrecognized for line: " + line);
+	                        	
+	                        	String address = lineParts[1];
+	                        	address = address.substring(2);
+	                        	String symbol = lineParts[2];
+	                        	machine.getCpu().addDebugSymbol(address, symbol);
+	                        }
                         }
                         
                         logger.info("Debug file '{}' loaded.", debugFile.getName());
