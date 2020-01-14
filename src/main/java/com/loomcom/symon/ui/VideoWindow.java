@@ -25,6 +25,7 @@ package com.loomcom.symon.ui;
 
 import com.loomcom.symon.devices.Crtc;
 import com.loomcom.symon.devices.DeviceChangeListener;
+import com.loomcom.symon.devices.VideoDevice;
 import com.loomcom.symon.exceptions.MemoryAccessException;
 
 import javax.swing.*;
@@ -57,7 +58,7 @@ import static java.lang.System.*;
  * updates state in a way that may require the view to update, it calls
  * the <tt>deviceStateChange</tt> callback on this Window.
  */
-public class VideoWindow extends JFrame implements DeviceChangeListener {
+public class VideoWindow extends JFrame implements DeviceChangeListener, VideoDevice {
 
     /**
 	 * 
@@ -69,10 +70,6 @@ public class VideoWindow extends JFrame implements DeviceChangeListener {
     private static final int CHAR_WIDTH = 8;
     private static final int CHAR_HEIGHT = 8;
 
-    private final int scaleX, scaleY;
-    private final boolean shouldScale;
-
-    private BufferedImage image;
     private int[] charRom;
 
     private int horizontalDisplayed;
@@ -81,51 +78,11 @@ public class VideoWindow extends JFrame implements DeviceChangeListener {
     private int cursorBlinkRate;
     private boolean hideCursor;
 
-    private Dimension dimensions;
     private Crtc crtc;
 
     private ScheduledExecutorService scheduler;
     private ScheduledFuture<?> cursorBlinker;
 
-    /**
-     * A panel representing the composite video output, with fast Graphics2D painting.
-     */
-    private class VideoPanel extends JPanel {
-        /**
-		 * 
-		 */
-		private static final long serialVersionUID = 6576873171278598445L;
-
-		@Override
-        public void paintComponent(Graphics g) {
-            try {
-                for (int i = 0; i < crtc.getPageSize(); i++) {
-                    int address = crtc.getStartAddress() + i;
-                    int originX = (i % horizontalDisplayed) * CHAR_WIDTH;
-                    int originY = (i / horizontalDisplayed) * scanLinesPerRow;
-                    image.getRaster().setPixels(originX, originY, CHAR_WIDTH, scanLinesPerRow, getGlyph(address));
-                }
-                Graphics2D g2d = (Graphics2D) g;
-                if (shouldScale) {
-                    g2d.scale(scaleX, scaleY);
-                }
-                g2d.drawImage(image, 0, 0, null);
-            } catch (MemoryAccessException ex) {
-                logger.log(Level.SEVERE, "Memory Access Exception, can't paint video window! " + ex.getMessage());
-            }
-        }
-
-        @Override
-        public Dimension getMinimumSize() {
-            return dimensions;
-        }
-
-        @Override
-        public Dimension getPreferredSize() {
-            return dimensions;
-        }
-
-    }
 
     /**
      * Runnable task that blinks the cursor.
@@ -150,9 +107,6 @@ public class VideoWindow extends JFrame implements DeviceChangeListener {
         this.scheduler = Executors.newSingleThreadScheduledExecutor();
         this.crtc = crtc;
         this.charRom = loadCharRom("/ascii.rom");
-        this.scaleX = scaleX;
-        this.scaleY = scaleY;
-        this.shouldScale = (scaleX > 1 || scaleY > 1);
         this.cursorBlinkRate = crtc.getCursorBlinkRate();
 
         if (cursorBlinkRate > 0) {
@@ -171,7 +125,7 @@ public class VideoWindow extends JFrame implements DeviceChangeListener {
 
         buildImage();
 
-        createAndShowUi();
+        createAndShowUi(scaleX, scaleY);
 
     }
 
@@ -223,9 +177,12 @@ public class VideoWindow extends JFrame implements DeviceChangeListener {
         }
     }
 
-    private void createAndShowUi() {
+    private void createAndShowUi(int scaleX, int scaleY) {
         setTitle("Composite Video");
-
+        
+        int rasterWidth = CHAR_WIDTH * horizontalDisplayed;
+        int rasterHeight = scanLinesPerRow * verticalDisplayed;
+        
         int borderWidth = 20;
         int borderHeight = 20;
 
@@ -234,11 +191,29 @@ public class VideoWindow extends JFrame implements DeviceChangeListener {
         containerPane.setLayout(new BorderLayout());
         containerPane.setBackground(Color.black);
 
-        containerPane.add(new VideoPanel(), BorderLayout.CENTER);
+        containerPane.add(new VideoPanel(this, new Dimension(rasterWidth * scaleX, rasterHeight * scaleY), scaleX, scaleY), BorderLayout.CENTER);
 
         getContentPane().add(containerPane, BorderLayout.CENTER);
         setResizable(false);
         pack();
+    }
+    
+    public Image getImage() {
+        int rasterWidth = CHAR_WIDTH * horizontalDisplayed;
+        int rasterHeight = scanLinesPerRow * verticalDisplayed;
+        BufferedImage image = new BufferedImage(rasterWidth, rasterHeight, BufferedImage.TYPE_BYTE_BINARY);
+        try {
+            for (int i = 0; i < crtc.getPageSize(); i++) {
+                int address = crtc.getStartAddress() + i;
+                int originX = (i % horizontalDisplayed) * CHAR_WIDTH;
+                int originY = (i / horizontalDisplayed) * scanLinesPerRow;
+                image.getRaster().setPixels(originX, originY, CHAR_WIDTH, scanLinesPerRow, getGlyph(address));
+            }
+            
+        } catch (MemoryAccessException ex) {
+            logger.log(Level.SEVERE, "Memory Access Exception, can't paint video window! " + ex.getMessage());
+        }
+        return image;
     }
 
     /**
@@ -271,10 +246,7 @@ public class VideoWindow extends JFrame implements DeviceChangeListener {
     }
 
     private void buildImage() {
-        int rasterWidth = CHAR_WIDTH * horizontalDisplayed;
-        int rasterHeight = scanLinesPerRow * verticalDisplayed;
-        this.image = new BufferedImage(rasterWidth, rasterHeight, BufferedImage.TYPE_BYTE_BINARY);
-        this.dimensions = new Dimension(rasterWidth * scaleX, rasterHeight * scaleY);
+        
     }
 
     /**
