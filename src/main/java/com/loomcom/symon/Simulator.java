@@ -380,10 +380,11 @@ public class Simulator {
             traceLog.reset();
             // If we're doing a cold reset, clear the memory.
             if (isColdReset) {
-                Memory mem = machine.getRam();
-                if (mem != null) {
-                    mem.reset();
-                }
+            	for (Memory mem : machine.getRam()) {
+                    if (mem != null) {
+                        mem.reset();
+                    }
+            	}
             }
             // Update status.
             updateVisibleState();

@@ -26,6 +26,8 @@
 package com.loomcom.symon.machines;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,8 +111,8 @@ public class DodoMachine implements Machine {
     }
 
     @Override
-    public Memory getRam() {
-        return ram;
+    public List<Memory> getRam() {
+        return Arrays.asList(new Memory[] { ram });
     }
 
     @Override

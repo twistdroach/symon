@@ -24,6 +24,8 @@
 
 package com.loomcom.symon.machines;
 
+import java.util.List;
+
 import com.loomcom.symon.Bus;
 import com.loomcom.symon.Cpu;
 import com.loomcom.symon.devices.Acia;
@@ -39,7 +41,7 @@ public interface Machine {
 
     Cpu getCpu();
     
-    Memory getRam();
+    List<Memory> getRam();
     
     Acia getAcia();
     

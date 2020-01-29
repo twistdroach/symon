@@ -31,6 +31,11 @@ public class MachineFactory {
 				return new CNP1Machine();
 			}
 		},
+		CNP2("CNP-2", "cnp2") {
+			public Machine create() throws Exception {
+				return new CNP2Machine();
+			}
+		},
 		DODO("DoDo-6502", "dodo") {
 			public Machine create() throws Exception {
 				return new DodoMachine();

@@ -24,6 +24,9 @@
 
 package com.loomcom.symon.machines;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.loomcom.symon.Bus;
 import com.loomcom.symon.Cpu;
 import com.loomcom.symon.devices.Acia;
@@ -66,10 +69,9 @@ public class SimpleMachine implements Machine {
     }
 
     @Override
-    public Memory getRam() {
-        return ram;
+    public List<Memory> getRam() {
+        return Arrays.asList(new Memory[] { ram });
     }
-
     @Override
     public Acia getAcia() {
         return null;

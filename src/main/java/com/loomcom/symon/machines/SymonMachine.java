@@ -32,6 +32,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 public class SymonMachine implements Machine {
     
@@ -109,8 +111,8 @@ public class SymonMachine implements Machine {
     }
 
     @Override
-    public Memory getRam() {
-        return ram;
+    public List<Memory> getRam() {
+        return Arrays.asList(new Memory[] { ram });
     }
 
     @Override

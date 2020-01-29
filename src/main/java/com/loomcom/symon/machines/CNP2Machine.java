@@ -44,46 +44,64 @@ import com.loomcom.symon.devices.RandomFillMemory;
 import com.loomcom.symon.devices.Via6522;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 
+
 /**
- * The CNP1 is a simple 6502 machine
+ * The CNP2 is a simple 6502 machine
+ * $0000-$01FF - RAM (zero page and stack space)
+ * $0200-$020F - IO Device #1 (16 bytes) VIA2
+ * $0210-$021F - IO Device #2 (16 bytes) VIA1
+ * $0220-$022F - IO Device #3 (16 bytes) ACIA
+ * $0230-$023F - IO Device #4 (16 bytes) Expansion Port
+ * $0240-$02FF - unassigned (can be externally decoded for use) 
+ * $0300-$7FFF - RAM
+ * $8000-$FFFF - ROM
  */
-public class CNP1Machine implements Machine {
-	private final static Logger logger = LoggerFactory.getLogger(CNP1Machine.class.getName());
+public class CNP2Machine implements Machine {
+	private final static Logger logger = LoggerFactory.getLogger(CNP2Machine.class.getName());
 
     private static final int BUS_BOTTOM = 0x0000;
     private static final int BUS_TOP    = 0xffff;
 
     // 16K of RAM from $0000 - $3FFF
-    private static final int MEMORY_BASE = 0x0000;
-    private static final int MEMORY_SIZE = 0x4000;
+    private static final int MEMORY1_BASE = 0x0000;
+    private static final int MEMORY1_SIZE = 0x0200;
+    private static final int MEMORY2_BASE = 0x0300;
+    private static final int MEMORY2_SIZE = 0x7D00;
     
     // VIA at $6000-$600F
-    private static final int VIA_BASE = 0x6000;
+    private static final int VIA1_BASE = 0x0210;
+    private static final int VIA2_BASE = 0x0200;
     
     // ACIA at $4100-$4103
-    private static final int ACIA_BASE = 0x4400;
+    private static final int ACIA_BASE = 0x0220;
     
     // 32KB ROM at $C000-$FFFF
     private static final int ROM_BASE = 0x8000;
     private static final int ROM_SIZE = 0x8000;
     
     private final Bus bus;
-    private final RandomFillMemory ram;
+    private final RandomFillMemory ram1;
+    private final RandomFillMemory ram2;
     private final Cpu cpu;
     private final Acia   acia;
-    private final Pia    via;
+    private final Pia    via1;
+    private final Pia	 via2;
     private       Memory rom;
 
-    public CNP1Machine() throws Exception {
+    public CNP2Machine() throws Exception {
         this.bus = new Bus(BUS_BOTTOM, BUS_TOP);
         this.cpu = new Cpu(CpuBehavior.CMOS_6502);
-        this.ram = new RandomFillMemory(MEMORY_BASE, MEMORY_BASE + MEMORY_SIZE - 1, false);
-        this.via = new Via6522(VIA_BASE);
+        this.ram1 = new RandomFillMemory(MEMORY1_BASE, MEMORY1_BASE + MEMORY1_SIZE - 1, false);
+        this.ram2 = new RandomFillMemory(MEMORY2_BASE, MEMORY2_BASE + MEMORY2_SIZE - 1, false);
+        this.via1 = new Via6522(VIA1_BASE);
+        this.via2 = new Via6522(VIA2_BASE);
         this.acia = new Acia6551(ACIA_BASE);
         
         bus.addCpu(cpu);
-        bus.addDevice(ram);
-        bus.addDevice(via);
+        bus.addDevice(ram1);
+        bus.addDevice(ram2);
+        bus.addDevice(via1);
+        bus.addDevice(via2);
         bus.addDevice(acia);
         
         // TODO: Make this configurable, of course.
@@ -111,7 +129,7 @@ public class CNP1Machine implements Machine {
 
     @Override
     public List<Memory> getRam() {
-        return Arrays.asList(new Memory[] { ram });
+    	return Arrays.asList(new Memory[] { ram1, ram2 });
     }
 
     @Override
@@ -121,7 +139,7 @@ public class CNP1Machine implements Machine {
 
     @Override
     public Pia getPia() {
-        return via;
+        return via1;
     }
 
     @Override
@@ -155,7 +173,7 @@ public class CNP1Machine implements Machine {
 
     @Override
     public int getMemorySize() {
-        return MEMORY_SIZE;
+        return MEMORY2_SIZE;
     }
 
     @Override

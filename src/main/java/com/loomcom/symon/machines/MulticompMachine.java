@@ -34,6 +34,8 @@ import com.loomcom.symon.devices.Pia;
 import com.loomcom.symon.devices.SdController;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 
 
@@ -106,8 +108,8 @@ public class MulticompMachine implements Machine {
     }
 
     @Override
-    public Memory getRam() {
-        return ram;
+    public List<Memory> getRam() {
+        return Arrays.asList(new Memory[] { ram });
     }
 
     @Override
