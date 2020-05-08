@@ -72,8 +72,10 @@ import com.loomcom.symon.exceptions.SymonException;
 import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.ui.BreakpointsWindow;
 import com.loomcom.symon.ui.Console;
+import com.loomcom.symon.ui.CrtcVideoWindow;
 import com.loomcom.symon.ui.MemoryWindow;
 import com.loomcom.symon.ui.PreferencesDialog;
+import com.loomcom.symon.ui.SearleVideoWindow;
 import com.loomcom.symon.ui.StatusPanel;
 import com.loomcom.symon.ui.TraceLog;
 import com.loomcom.symon.ui.VideoWindow;
@@ -188,7 +190,9 @@ public class Simulator {
         this.breakpointsWindow = new BreakpointsWindow(breakpoints, mainWindow);
 
         if (machine.getCrtc() != null) {
-            videoWindow = new VideoWindow(machine.getCrtc(), 2, 2);
+            videoWindow = new CrtcVideoWindow(machine.getCrtc(), 2, 2);
+        } else if (machine.getSearleVideo() != null) {
+        	videoWindow = new SearleVideoWindow(machine.getSearleVideo(), 2, 2);
         } else {
             videoWindow = null;
         }

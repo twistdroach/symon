@@ -45,7 +45,7 @@ import com.loomcom.symon.devices.SSD1305;
 import com.loomcom.symon.devices.Via6522;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 
-public class DodoMachine implements Machine {
+public class DodoMachine extends Machine {
 	private final static Logger logger = LoggerFactory.getLogger(DodoMachine.class.getName());
 
     private static final int BUS_BOTTOM = 0x0000;

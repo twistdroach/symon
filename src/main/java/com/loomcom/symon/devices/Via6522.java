@@ -23,6 +23,9 @@
 
 package com.loomcom.symon.devices;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.joou.UByte;
 
 import com.loomcom.symon.StepListener;
@@ -37,13 +40,14 @@ public class Via6522 extends Pia implements StepListener {
     public static final int VIA_SIZE = 16;
     private final UByte[] registers = new UByte[VIA_SIZE];
     
-
     private static enum Register {
         ORB, ORA, DDRB, DDRA, T1C_L, T1C_H, T1L_L, T1L_H,
         T2C_L, T2C_H, SR, ACR, PCR, IFR, IER, ORA_H
     }
     private static final Register[] addressToRegister = Register.values();
 
+    Map<Port, PortConnectedDevice> portConnectedDevices = new HashMap<Port, PortConnectedDevice>();
+    
     public Via6522(int address) throws MemoryRangeException {
         super(address, address + VIA_SIZE - 1, "MOS 6522 VIA");
         for( int i = 0; i < registers.length; i++) {
@@ -62,7 +66,15 @@ public class Via6522 extends Pia implements StepListener {
 
         switch (r) {
             case ORA:
+            	if (portConnectedDevices.get(Port.Port1) != null) {
+            		portConnectedDevices.get(Port.Port1).writeByte(data);
+            	}
+            	break;
             case ORB:
+            	if (portConnectedDevices.get(Port.Port2) != null) {
+            		portConnectedDevices.get(Port.Port2).writeByte(data);
+            	}
+            	break;
             case DDRA:
             case DDRB:
             case T1C_L:
@@ -95,7 +107,15 @@ public class Via6522 extends Pia implements StepListener {
 
         switch (r) {
             case ORA:
+            	if (portConnectedDevices.get(Port.Port1) != null) {
+            		return portConnectedDevices.get(Port.Port1).readByte();
+            	}
+            	break;
             case ORB:
+            	if (portConnectedDevices.get(Port.Port2) != null) {
+            		return portConnectedDevices.get(Port.Port2).readByte();
+            	}
+            	break;
             case DDRA:
             case DDRB:
             case T1C_L:
@@ -108,6 +128,8 @@ public class Via6522 extends Pia implements StepListener {
             case ACR:
             case PCR:
             case IFR:
+            	//TODO this is a hack to simulate handshaking with Searle's adapter...need to fix
+            	return 0xFF;
             case IER:
             case ORA_H:
             default:
@@ -116,6 +138,10 @@ public class Via6522 extends Pia implements StepListener {
         return registers[r.ordinal()].intValue();
     }
 
+    public void addDevice(PortConnectedDevice pcd, Port port) {
+    	portConnectedDevices.put(port, pcd);
+    }
+    
 	@Override
 	public void step() {
 		// TODO Auto-generated method stub

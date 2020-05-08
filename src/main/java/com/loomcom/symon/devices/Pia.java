@@ -28,6 +28,7 @@ import com.loomcom.symon.exceptions.MemoryRangeException;
 public abstract class Pia extends Device {
 
     private final String name;
+    public enum Port { Port1, Port2 };
 
     public Pia(int startAddress, int endAddress, String name) throws MemoryRangeException {
         super(startAddress, endAddress, name);
@@ -38,4 +39,6 @@ public abstract class Pia extends Device {
     public String toString() {
         return name;
     }
+
+	public abstract void addDevice(PortConnectedDevice pcd, Port port);
 }

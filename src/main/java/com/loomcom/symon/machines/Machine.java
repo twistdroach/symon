@@ -24,6 +24,7 @@
 
 package com.loomcom.symon.machines;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.loomcom.symon.Bus;
@@ -32,32 +33,48 @@ import com.loomcom.symon.devices.Acia;
 import com.loomcom.symon.devices.Crtc;
 import com.loomcom.symon.devices.Memory;
 import com.loomcom.symon.devices.Pia;
+import com.loomcom.symon.devices.SearleVideo;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 
 
-public interface Machine {
+public abstract class Machine {
     
-    Bus getBus();
+    public abstract Bus getBus();
 
-    Cpu getCpu();
+    public abstract Cpu getCpu();
     
-    List<Memory> getRam();
+    public List<Memory> getRam() {
+    	return new ArrayList<Memory>();
+    }
     
-    Acia getAcia();
+    public Acia getAcia() {
+    	return null;
+    }
     
-    Pia getPia();
+    public Pia getPia() {
+    	return null;
+    }
     
-    Crtc getCrtc();
+    public Crtc getCrtc() {
+    	return null;
+    }
     
-    Memory getRom();
+    public SearleVideo getSearleVideo() {
+    	return null;
+    }
     
-    void setRom(Memory rom) throws MemoryRangeException;
+    public Memory getRom() {
+    	return null;
+    }
     
-    int getRomBase();
+    public void setRom(Memory rom) throws MemoryRangeException {
+    }
     
-    int getRomSize();
+    public abstract int getRomBase();
     
-    int getMemorySize();
+    public abstract int getRomSize();
+    
+    public abstract int getMemorySize();
 
-    String getName();
+    public abstract String getName();
 }

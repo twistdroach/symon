@@ -40,7 +40,7 @@ import com.loomcom.symon.exceptions.MemoryRangeException;
  * consists solely of RAM and a CPU. This machine is primarily useful
  * for running 6502 functional tests or debugging by hand.
  */
-public class SimpleMachine implements Machine {
+public class SimpleMachine extends Machine {
 
     private static final int BUS_BOTTOM = 0x0000;
     private static final int BUS_TOP    = 0xffff;

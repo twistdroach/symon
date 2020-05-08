@@ -6,7 +6,6 @@ import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
 
-import com.loomcom.symon.devices.VideoDevice;
 
 
 /**
@@ -19,12 +18,12 @@ public class VideoPanel extends JPanel {
 	private static final long serialVersionUID = 6576873171278598445L;
 
 	
-	private final VideoDevice device;
+	private final VideoWindow device;
 	private final Dimension dimensions;
     private final int scaleX, scaleY;
     private final boolean shouldScale;
 	
-	public VideoPanel(VideoDevice device, Dimension dimension, int scaleX, int scaleY) {
+	public VideoPanel(VideoWindow device, Dimension dimension, int scaleX, int scaleY) {
 		this.device = device;
 		this.dimensions = dimension;
         this.scaleX = scaleX;

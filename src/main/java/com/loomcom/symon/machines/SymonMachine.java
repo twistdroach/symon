@@ -35,7 +35,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-public class SymonMachine implements Machine {
+public class SymonMachine extends Machine {
     
     private final static Logger logger = LoggerFactory.getLogger(SymonMachine.class.getName());
     

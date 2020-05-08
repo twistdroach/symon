@@ -40,7 +40,9 @@ import com.loomcom.symon.devices.Acia6551;
 import com.loomcom.symon.devices.Crtc;
 import com.loomcom.symon.devices.Memory;
 import com.loomcom.symon.devices.Pia;
+import com.loomcom.symon.devices.Pia.Port;
 import com.loomcom.symon.devices.RandomFillMemory;
+import com.loomcom.symon.devices.SearleVideo;
 import com.loomcom.symon.devices.Via6522;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 
@@ -56,7 +58,7 @@ import com.loomcom.symon.exceptions.MemoryRangeException;
  * $0300-$7FFF - RAM
  * $8000-$FFFF - ROM
  */
-public class CNP2Machine implements Machine {
+public class CNP2Machine extends Machine {
 	private final static Logger logger = LoggerFactory.getLogger(CNP2Machine.class.getName());
 
     private static final int BUS_BOTTOM = 0x0000;
@@ -80,13 +82,14 @@ public class CNP2Machine implements Machine {
     private static final int ROM_SIZE = 0x8000;
     
     private final Bus bus;
-    private final RandomFillMemory ram1;
-    private final RandomFillMemory ram2;
+    private final Memory ram1;
+    private final Memory ram2;
     private final Cpu cpu;
     private final Acia   acia;
     private final Pia    via1;
     private final Pia	 via2;
     private       Memory rom;
+    private final SearleVideo searleVideo;
 
     public CNP2Machine() throws Exception {
         this.bus = new Bus(BUS_BOTTOM, BUS_TOP);
@@ -103,6 +106,9 @@ public class CNP2Machine implements Machine {
         bus.addDevice(via1);
         bus.addDevice(via2);
         bus.addDevice(acia);
+        
+        this.searleVideo = new SearleVideo();
+        via1.addDevice(searleVideo, Port.Port1);
         
         // TODO: Make this configurable, of course.
         File romImage = new File("rom.bin");

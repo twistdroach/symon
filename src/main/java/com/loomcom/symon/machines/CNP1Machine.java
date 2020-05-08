@@ -47,7 +47,7 @@ import com.loomcom.symon.exceptions.MemoryRangeException;
 /**
  * The CNP1 is a simple 6502 machine
  */
-public class CNP1Machine implements Machine {
+public class CNP1Machine extends Machine {
 	private final static Logger logger = LoggerFactory.getLogger(CNP1Machine.class.getName());
 
     private static final int BUS_BOTTOM = 0x0000;
@@ -68,7 +68,7 @@ public class CNP1Machine implements Machine {
     private static final int ROM_SIZE = 0x8000;
     
     private final Bus bus;
-    private final RandomFillMemory ram;
+    private final Memory ram;
     private final Cpu cpu;
     private final Acia   acia;
     private final Pia    via;
