@@ -233,7 +233,8 @@ public class Simulator {
         JButton assertNmi = new JButton("NMI");
         assertNmi.setToolTipText("Manually assert a non-maskable interrupt");
         JButton assertIrq = new JButton("IRQ");
-
+        assertIrq.setToolTipText("Manually assert a maskable interrupt");
+        
         stepCountBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {

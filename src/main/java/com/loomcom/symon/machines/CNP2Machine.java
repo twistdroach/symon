@@ -127,6 +127,11 @@ public class CNP2Machine extends Machine {
     public Bus getBus() {
         return bus;
     }
+    
+    @Override
+    public SearleVideo getSearleVideo() {
+    	return searleVideo;
+    }
 
     @Override
     public Cpu getCpu() {
@@ -184,6 +189,6 @@ public class CNP2Machine extends Machine {
 
     @Override
     public String getName() {
-        return "CNP-1";
+        return "CNP-2";
     }
 }
